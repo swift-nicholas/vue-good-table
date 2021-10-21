@@ -3325,7 +3325,11 @@
         type: Boolean
       },
       tableRef: {},
-      paginated: {}
+      paginated: {},
+      disableMultiselect: {
+        type: Boolean,
+        "default": false
+      }
     },
     watch: {
       columns: {
@@ -3517,7 +3521,8 @@
       }
     }, [_c('input', {
       attrs: {
-        "type": "checkbox"
+        "type": "checkbox",
+        "disabled": _vm.disableMultiselect
       },
       domProps: {
         "checked": _vm.allSelected,
@@ -8606,7 +8611,8 @@
             selectionText: 'rows selected',
             clearSelectionText: 'clear',
             disableSelectInfo: false,
-            selectAllByGroup: false
+            selectAllByGroup: false,
+            disableMultiselect: false
           };
         }
       },
@@ -9312,6 +9318,10 @@
       },
       // checkbox click should always do the following
       onCheckboxClicked: function onCheckboxClicked(row, index, event) {
+        if (this.disableMultiselect) {
+          this.unselectAllInternal();
+        }
+
         this.$set(row, 'vgtSelected', !row.vgtSelected);
         this.$emit('on-row-click', {
           row: row,
@@ -9330,6 +9340,10 @@
       },
       onRowClicked: function onRowClicked(row, index, event) {
         if (this.selectable && !this.selectOnCheckboxOnly) {
+          if (this.disableMultiselect) {
+            this.unselectAllInternal();
+          }
+
           this.$set(row, 'vgtSelected', !row.vgtSelected);
         }
 
@@ -9803,7 +9817,8 @@
             selectOnCheckboxOnly = _this$selectOptions.selectOnCheckboxOnly,
             selectAllByPage = _this$selectOptions.selectAllByPage,
             disableSelectInfo = _this$selectOptions.disableSelectInfo,
-            selectAllByGroup = _this$selectOptions.selectAllByGroup;
+            selectAllByGroup = _this$selectOptions.selectAllByGroup,
+            disableMultiselect = _this$selectOptions.disableMultiselect;
 
         if (typeof enabled === 'boolean') {
           this.selectable = enabled;
@@ -9823,6 +9838,10 @@
 
         if (typeof disableSelectInfo === 'boolean') {
           this.disableSelectInfo = disableSelectInfo;
+        }
+
+        if (typeof disableMultiselect === 'boolean') {
+          this.disableMultiselect = disableMultiselect;
         }
 
         if (typeof selectionInfoClass === 'string') {
@@ -9967,7 +9986,8 @@
         "getClasses": _vm.getClasses,
         "searchEnabled": _vm.searchEnabled,
         "paginated": _vm.paginated,
-        "table-ref": _vm.$refs.table
+        "table-ref": _vm.$refs.table,
+        "disable-multiselect": _vm.selectOptions.disableMultiselect
       },
       on: {
         "on-toggle-select-all": _vm.toggleSelectAll,
@@ -10022,7 +10042,8 @@
         "multiple-column-sort": _vm.multipleColumnSort,
         "typed-columns": _vm.typedColumns,
         "getClasses": _vm.getClasses,
-        "searchEnabled": _vm.searchEnabled
+        "searchEnabled": _vm.searchEnabled,
+        "disable-multiselect": _vm.selectOptions.disableMultiselect
       },
       on: {
         "on-toggle-select-all": _vm.toggleSelectAll,

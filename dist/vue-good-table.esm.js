@@ -3319,7 +3319,11 @@ var script$4 = {
       type: Boolean
     },
     tableRef: {},
-    paginated: {}
+    paginated: {},
+    disableMultiselect: {
+      type: Boolean,
+      "default": false
+    }
   },
   watch: {
     columns: {
@@ -3511,7 +3515,8 @@ var __vue_render__$4 = function __vue_render__() {
     }
   }, [_c('input', {
     attrs: {
-      "type": "checkbox"
+      "type": "checkbox",
+      "disabled": _vm.disableMultiselect
     },
     domProps: {
       "checked": _vm.allSelected,
@@ -8600,7 +8605,8 @@ var script$6 = {
           selectionText: 'rows selected',
           clearSelectionText: 'clear',
           disableSelectInfo: false,
-          selectAllByGroup: false
+          selectAllByGroup: false,
+          disableMultiselect: false
         };
       }
     },
@@ -9306,6 +9312,10 @@ var script$6 = {
     },
     // checkbox click should always do the following
     onCheckboxClicked: function onCheckboxClicked(row, index, event) {
+      if (this.disableMultiselect) {
+        this.unselectAllInternal();
+      }
+
       this.$set(row, 'vgtSelected', !row.vgtSelected);
       this.$emit('on-row-click', {
         row: row,
@@ -9324,6 +9334,10 @@ var script$6 = {
     },
     onRowClicked: function onRowClicked(row, index, event) {
       if (this.selectable && !this.selectOnCheckboxOnly) {
+        if (this.disableMultiselect) {
+          this.unselectAllInternal();
+        }
+
         this.$set(row, 'vgtSelected', !row.vgtSelected);
       }
 
@@ -9797,7 +9811,8 @@ var script$6 = {
           selectOnCheckboxOnly = _this$selectOptions.selectOnCheckboxOnly,
           selectAllByPage = _this$selectOptions.selectAllByPage,
           disableSelectInfo = _this$selectOptions.disableSelectInfo,
-          selectAllByGroup = _this$selectOptions.selectAllByGroup;
+          selectAllByGroup = _this$selectOptions.selectAllByGroup,
+          disableMultiselect = _this$selectOptions.disableMultiselect;
 
       if (typeof enabled === 'boolean') {
         this.selectable = enabled;
@@ -9817,6 +9832,10 @@ var script$6 = {
 
       if (typeof disableSelectInfo === 'boolean') {
         this.disableSelectInfo = disableSelectInfo;
+      }
+
+      if (typeof disableMultiselect === 'boolean') {
+        this.disableMultiselect = disableMultiselect;
       }
 
       if (typeof selectionInfoClass === 'string') {
@@ -9961,7 +9980,8 @@ var __vue_render__$6 = function __vue_render__() {
       "getClasses": _vm.getClasses,
       "searchEnabled": _vm.searchEnabled,
       "paginated": _vm.paginated,
-      "table-ref": _vm.$refs.table
+      "table-ref": _vm.$refs.table,
+      "disable-multiselect": _vm.selectOptions.disableMultiselect
     },
     on: {
       "on-toggle-select-all": _vm.toggleSelectAll,
@@ -10016,7 +10036,8 @@ var __vue_render__$6 = function __vue_render__() {
       "multiple-column-sort": _vm.multipleColumnSort,
       "typed-columns": _vm.typedColumns,
       "getClasses": _vm.getClasses,
-      "searchEnabled": _vm.searchEnabled
+      "searchEnabled": _vm.searchEnabled,
+      "disable-multiselect": _vm.selectOptions.disableMultiselect
     },
     on: {
       "on-toggle-select-all": _vm.toggleSelectAll,
