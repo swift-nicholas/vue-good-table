@@ -7,6 +7,7 @@
         type="checkbox"
         :checked="allSelected"
         :indeterminate.prop="allSelectedIndeterminate"
+        :disabled="disableMultiselect"
         @change="toggleSelectAll" />
     </th>
     <th v-for="(column, index) in columns"
@@ -107,6 +108,11 @@ export default {
     tableRef: {},
 
     paginated: {},
+
+    disableMultiselect: {
+      type: Boolean,
+      default: false
+    }
   },
   watch: {
     columns: {
