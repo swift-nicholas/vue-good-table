@@ -98,6 +98,7 @@
             :searchEnabled="searchEnabled"
             :paginated="paginated"
             :table-ref="$refs.table"
+            :disable-multiselect="selectOptions.disableMultiselect"
           >
             <template
               slot="table-column"
@@ -153,6 +154,7 @@
             :typed-columns="typedColumns"
             :getClasses="getClasses"
             :searchEnabled="searchEnabled"
+            :disable-multiselect="selectOptions.disableMultiselect"
           >
             <template
               slot="table-column"
@@ -406,6 +408,7 @@ export default {
           clearSelectionText: 'clear',
           disableSelectInfo: false,
           selectAllByGroup: false,
+          disableMultiselect: false
         };
       },
     },
@@ -1159,6 +1162,10 @@ export default {
 
     // checkbox click should always do the following
     onCheckboxClicked(row, index, event) {
+      if (this.disableMultiselect) {
+        this.unselectAllInternal()
+      }
+
       this.$set(row, 'vgtSelected', !row.vgtSelected);
       this.$emit('on-row-click', {
         row,
@@ -1179,6 +1186,9 @@ export default {
 
     onRowClicked(row, index, event) {
       if (this.selectable && !this.selectOnCheckboxOnly) {
+        if (this.disableMultiselect) {
+          this.unselectAllInternal()
+        }
         this.$set(row, 'vgtSelected', !row.vgtSelected);
       }
       this.$emit('on-row-click', {
@@ -1647,6 +1657,7 @@ export default {
         selectAllByPage,
         disableSelectInfo,
         selectAllByGroup,
+        disableMultiselect
       } = this.selectOptions;
 
       if (typeof enabled === 'boolean') {
@@ -1667,6 +1678,10 @@ export default {
 
       if (typeof disableSelectInfo === 'boolean') {
         this.disableSelectInfo = disableSelectInfo;
+      }
+
+      if (typeof disableMultiselect === 'boolean') {
+        this.disableMultiselect = disableMultiselect
       }
 
       if (typeof selectionInfoClass === 'string') {
